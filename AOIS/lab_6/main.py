@@ -6,23 +6,19 @@ table = Table(20)
 data(table)
 
 while True:
-    print("Add - press 1")
-    print("Delete - press 2")
-    print("Search - press 3")
-    print("Print - press 4")
+    print("Add->1\nDelete->2\nSearch->3\nPrint->4\n")
 
-    print("To exit - press 0")
-    choose = input("Enter choise: ")
+    choose = input("==>")
     if choose == '1':
-        key = input("Enter key: ")
-        data = input("Enter data: ")
-        table.insert(key, data)
+        key = input("Key->  ")
+        data = input("Data-> ")
+        table.Add(key, data)
     elif choose == '2':
-        word = input("Enter key: ")
-        table.delete(word)
+        key = input("Key-> ")
+        table.delete(key)
     elif choose == '3':
-        word = input("Enter key: ")
-        print(table.find(word))
+        key = input("Key-> ")
+        print(table.find(key))
     elif choose == '4':
         print(table.print_table())
     else:

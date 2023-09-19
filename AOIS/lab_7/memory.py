@@ -1,6 +1,19 @@
+from random import randint
+
+
 def show(list):
     for i in list:
         print(i)
+
+
+def create_list():
+    numbet_list = []
+    for i in range(10):
+        numbet_list.append(randint(0, 50))
+    mem = []
+    for i in range(len(numbet_list)):
+        mem.append(list(dec_to_bin(numbet_list[i])))
+    return mem, numbet_list
 
 
 def dec_to_bin(dec_list: int):
@@ -10,20 +23,20 @@ def dec_to_bin(dec_list: int):
         dec_list //= 2
     for i in range(8 - len(bin_list)):
         bin_list.append(0)
-    bin_list = reversed(bin_list)
+    bin_list = bin_list[::-1]
     return bin_list
 
 
 def bin_to_dec(bin_list):
-    decimal_number = []
-    temp_decimal_number = 0
+    dec_number = []
+    temp_dec_number = 0
 
     for i in bin_list:
         for j in range(len(i)):
-            temp_decimal_number += 2 ** (len(i) - j - 1) * i[j]
-        decimal_number.append(temp_decimal_number)
-        temp_decimal_number = 0
-    return decimal_number
+            temp_dec_number += 2 ** (len(i) - j - 1) * i[j]
+        dec_number.append(temp_dec_number)
+        temp_dec_number = 0
+    return dec_number
 
 
 def sort(memory, sort_flag):
@@ -34,25 +47,28 @@ def sort(memory, sort_flag):
     return memory, bin_to_dec(memory)
 
 
-def comparison(list1, list2, flag):
-    greater_variable, less_variable = 0, 0
-    previous_greater_variable, previous_less_variable = 0, 0
+def comparison(number1, number2, f):
+    g_var, l_var = 0, 0
+    prev_g_var, prev_l_var = 0, 0
 
-    for i in range(len(list1)):
-        less_variable = previous_less_variable or (list1[i] and not list2[i] and not previous_greater_variable)
-        greater_variable = previous_greater_variable or (not list1[i] and list2[i] and not previous_less_variable)
-        previous_greater_variable, previous_less_variable = greater_variable, less_variable
+    for i in range(len(number1)):
+        if prev_l_var:
+            l_var = prev_l_var
+        elif number1[i] and not number2[i] and not prev_g_var:
+            l_var = number1[i] and not number2[i] and not prev_g_var
+        if prev_g_var:
+            g_var = prev_g_var
+        elif not number1[i] and number2[i] and not prev_l_var:
+            g_var = (not number1[i] and number2[i] and not prev_l_var)
+        prev_g_var, prev_l_var = g_var, l_var
 
-    if greater_variable:
-        return flag
-    elif less_variable:
-        return not flag
+    return f if g_var else not f
 
 
 def split(argument):
     temp_mask = []
     for i in argument:
-        temp_mask.append(int(i)) if i != 'x' else temp_mask.append(i)
+        temp_mask.append(int(i)) if i != '.' else temp_mask.append(i)
     return temp_mask
 
 
@@ -62,9 +78,9 @@ def search(argument, memory):
     for i in memory:
         find = True
         for j in range(len(i)):
-            if not ((argument[j] == 0 and not i[j] or (argument[j] == 1 and i[j])) or argument[j] == 'x'):
+            if not ((argument[j] != 0 and i[j]) or (argument[j] != 1 and not i[j])) and argument[j] != '.':
                 find = False
                 break
         if find:
             rez.append(i)
-    print(*(list(i) for i in rez) if rez else '---')
+    print(*(list(i) for i in rez) if rez else 'No')
