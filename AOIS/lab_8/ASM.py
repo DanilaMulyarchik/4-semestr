@@ -2,7 +2,7 @@ from random import choice
 import copy
 
 
-class AssociatMemory:
+class ASM:
     def __init__(self) -> None:
         self.size = 16
         self.memory = [[choice([0, 1]) for i in range(self.size)] for j in range(self.size)]
@@ -47,16 +47,33 @@ class AssociatMemory:
     def f_14(self, number):
         return self.f(number)
 
+    def _transposed_memory(self):
+        transposed_memory = []
+        for j in range(self.size):
+            row = []
+            for i in range(self.size):
+                row.append(self.memory_diagonal[i][j])
+            transposed_memory.append(row)
+        self.memory_diagonal = transposed_memory
+
+    def _s_word(self, first, second):
+        word = first + second
+        return word
+
     def read_word(self, column):
-        self.memory_diagonal = [[self.memory_diagonal[i][j] for i in range(self.size)] for j in range(self.size)]
-        word = self.memory_diagonal[column][column:] + self.memory_diagonal[column][:column]
-        self.memory_diagonal = [[self.memory_diagonal[i][j] for i in range(self.size)] for j in range(self.size)]
+        self._transposed_memory()
+        first_part = self.memory_diagonal[column][column:]
+        second_part = self.memory_diagonal[column][:column]
+        word = self._s_word(first_part, second_part)
+        self._transposed_memory()
         return word
 
     def set_word(self, word, column):
-        self.memory_diagonal = [[self.memory_diagonal[i][j] for i in range(self.size)] for j in range(self.size)]
-        self.memory_diagonal[column] = word[self.size - column:] + word[:self.size - column]
-        self.memory_diagonal = [[self.memory_diagonal[i][j] for i in range(self.size)] for j in range(self.size)]
+        self._transposed_memory()
+        first_part = word[self.size - column:]
+        second_part = word[:self.size - column]
+        self.memory_diagonal[column] = self._s_word(first_part, second_part)
+        self._transposed_memory()
 
     def __str__(self):
         for i in self.memory_diagonal:
